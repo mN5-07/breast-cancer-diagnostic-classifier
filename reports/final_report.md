@@ -23,7 +23,7 @@ The dataset is the well-known **Breast Cancer Wisconsin (Diagnostic)** from UCI 
   2. **texture_worst** — highest variation in gray-scale texture (surface roughness)
   3. **symmetry_worst** — greatest asymmetry in nucleus shape
   4. **concave points_worst** — most extreme number of indentations in contour
-  5–10: Various mean and worst shape/size metrics (concavity_mean, radius_worst, etc.)
+  5–10: Various mean and worst shape/size metrics (concave points_mean, concavity_mean, radius_worst, smoothness_worst, texture_se, area_worst)
 
 These **"worst"** (most extreme) features dominate because malignant tumors exhibit greater irregularity, jaggedness, and heterogeneity in cell nuclei — aligning closely with known pathological indicators.
 
@@ -41,7 +41,7 @@ breast_cancer_prediction/
 │   └── 04_feature_importance_insights.ipynb
 ├── models/                  # Saved trained models (.joblib)
 ├── reports/                 # Final polished report
-│   └── final_report.md
+│   └── final_report.md      (or final_report.ipynb)
 ├── README.md
 └── requirements.txt
 ```
@@ -75,7 +75,7 @@ breast_cancer_prediction/
 4. Explore the notebooks in order (01 → 04)
 
 5. View the final insights:
-   - `reports/final_report.ipynb` (recommended)
+   - `reports/final_report.md` (recommended)
    - Or browse the notebooks directly
 
 ## Results Summary Table
@@ -87,9 +87,17 @@ breast_cancer_prediction/
 | SVM (Linear)       | ~0.965        | ~0.963                     | ~0.991    |
 | Decision Tree      | ~0.921        | ~0.934                     | ~0.945    |
 
-### Note on High AUC Performance
+## Why Is the AUC So High?
 
-The near-perfect AUC (~0.99) is largely due to the Wisconsin Diagnostic dataset’s highly informative, expert-engineered features. Measurements of extreme nuclear irregularity (“worst” features) create strong class separability, allowing even linear models to achieve excellent discrimination. These results reflect dataset characteristics rather than real-world clinical complexity.
+The near-perfect AUC (~0.99) observed across multiple models is largely driven by the characteristics of the Wisconsin Diagnostic Breast Cancer dataset rather than model complexity alone.
+
+The input features are expert-engineered measurements of cell nucleus morphology derived from digitized FNA images—properties that are already known to differ strongly between malignant and benign tumors. Features such as concavity, concave points, symmetry, and texture directly quantify the irregular and chaotic nuclear shapes that pathologists use in real clinical diagnosis.
+
+In particular, the dataset includes “worst” (most extreme) feature values, which capture the most abnormal regions of a tumor. Malignancy often manifests in localized areas of extreme irregularity, making these worst-case measurements especially discriminative and leading to strong class separability.
+
+This separability is further reflected in the strong performance of linear models such as Logistic Regression and Linear SVM, indicating that the malignant and benign classes are close to linearly separable in the feature space. Additionally, ROC/AUC is a threshold-independent metric that measures ranking performance; as long as malignant samples consistently receive higher predicted scores than benign ones, AUC values remain high.
+
+While these results demonstrate effective learning of biologically meaningful patterns, it is important to note that this dataset is cleaner and more structured than many real-world clinical datasets. In practice, factors such as measurement noise, missing data, population shift, and imaging variability would likely reduce performance.
 
 
 ## Learning Outcomes
@@ -107,8 +115,10 @@ The near-perfect AUC (~0.99) is largely due to the Wisconsin Diagnostic dataset�
 - Deploy as a simple web app (Streamlit/Flask)
 
 ## Acknowledgments
+
 - Dataset creators: Dr. William H. Wolberg, University of Wisconsin
 - UCI Machine Learning Repository
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
